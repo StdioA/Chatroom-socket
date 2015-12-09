@@ -1,0 +1,36 @@
+//用户加入
+{
+    "action": "join",
+    "time": cur_time,
+    "nickname": nickname
+}
+
+//发送信息
+{
+	"action": "send",
+	"time": cur_time,
+	"msg": message
+}
+
+//用户退出
+{
+	"action": "quit",
+	"time": cur_time
+}
+
+
+//服务器转发信息
+{
+	"type": "message",
+	"time": send_time,
+	"nickname": nickname,
+	"address": address("127.0.0.1:5000"),
+	"msg": message
+}
+
+//服务器通知客户端
+{
+	"type": "info",
+	"time": time,
+	"msg": message
+}
