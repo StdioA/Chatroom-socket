@@ -19,7 +19,10 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.queue = Queue.Queue()
         self.client = Client(addr=addr, port=port,
                              nickname=nickname, queue=self.queue)
+        self.addr = self.client.get_local_addr()
+        self.addrs = "%s:%d"%self.addr
 
+        # 启动监听线程
         thr = threading.Thread(target=self.client.receive_loop)
         thr.setDaemon(True)
         thr.start()
@@ -47,11 +50,12 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
                     string = u"""
                     <p style="margin-top:3px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;">
-                    <span style="color:#0000ff;">{nickname}@{addr} {time}</span>
+                    <span style="color:{color};">{nickname}@{addr} {time}</span>
                     </p>
                     <p style="margin-top:0px; margin-bottom:3px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;">
                         &nbsp;&nbsp;{message}
-                    </p>""".format(nickname=data["nickname"], 
+                    </p>""".format( color="#008040" if data["address"]==self.addrs else "#0000ff",
+                                    nickname=data["nickname"], 
                                     time=tstr,
                                     addr=data["address"],
                                     message=data["msg"])

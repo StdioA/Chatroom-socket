@@ -94,6 +94,13 @@ class Client(object):
                                     "time": time.time(),
                                     "msg": msg}))
 
+    def get_local_addr(self):
+        addr = self.sock.getsockname()
+        if addr[0] == "localhost":
+            return "127.0.0.1", addr[1]
+        else:
+            return addr
+
     def main(self):
         """\
         主函数
