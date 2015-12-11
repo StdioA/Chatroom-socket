@@ -7,6 +7,12 @@ import threading
 
 class Client(object):
     def __init__(self, addr="127.0.0.1", port=12345, nickname=None, queue=None):
+        """\
+        @param addr: 服务器ip
+        @param port: 服务器端口
+        @param nickname: 注册昵称
+        @param queue: 消息队列，若此参数为一个队列，则将此队列作为消息队列，可用于其他基于命令行服务器的客户端的扩展
+        """
         self.addr = addr
         self.port = port
         self.run = True
@@ -20,6 +26,9 @@ class Client(object):
             return
 
     def connect(self, nickname=None):
+        """\
+        连接服务器，设置昵称，并加入聊天室
+        """
         try:
             self.sock.connect((self.addr, self.port))
             self.sock.settimeout(3)
@@ -43,7 +52,8 @@ class Client(object):
 
     def receive_loop(self):
         """\
-        监听线程，可以将收到的消息存入一个队列中
+        监听线程，可以将收到的消息存入消息队列中
+        若位提供消息队列，则该客户端为CLI模式，将收到的消息处理后在stdout输出
         """
         try:
             while self.run:
@@ -75,6 +85,9 @@ class Client(object):
                 print "Server closed"
 
     def send_loop(self):
+        """\
+        CLI客户端消息发送函数
+        """
         try:
             while self.run:
                 s = raw_input().decode("gbk").encode("utf-8")
@@ -88,7 +101,7 @@ class Client(object):
 
     def send_message(self, msg):
         """\
-        发送消息
+        消息发送API
         """
         self.sock.send(json.dumps({"action": "send", 
                                     "time": time.time(),
@@ -103,7 +116,7 @@ class Client(object):
 
     def main(self):
         """\
-        主函数
+        CLI客户端的主函数
         """
             
         funclist = [self.receive_loop, self.send_loop]

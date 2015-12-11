@@ -7,7 +7,15 @@ import json
 import Queue
 
 class Server(object):
+    """\
+    聊天室服务端
+    """
     def __init__(self, addr="localhost", port=12345, max_user=10):
+        """\
+        @param addr: 监听ip
+        @param port: 监听端口
+        @param max_user: 可建立连接的最大客户端个数
+        """
         self.addr = addr
         self.port = port
         self.max_user = max_user
@@ -21,9 +29,9 @@ class Server(object):
 
     def listen(self):
         """\
-        监听是否有新连接建立
+        监听是否有新连接建立，若有连接建立，则在连接列表中加入该连接
         """
-        # self.sock.bind((self.addr, self.port))
+
         self.sock.listen(self.max_user)
         print "Listening at %s:%d"%(self.addr, self.port)
         while True:
@@ -116,13 +124,13 @@ class Server(object):
         while True:
             addr, data, conn = self.data_queue.get()
             if data["action"] == "join":
-                self.user_join(data, addr)
+                self.user_join(data, addr)                                      # 客户端申请加入，在连接中注册其昵称
 
             elif data["action"] == "quit":
-                self.rm_conn(conn)
+                self.rm_conn(conn)                                              # 客户端要求退出，删除消息
 
             elif data["action"] == "send":
-                self.exec_message(data, addr)
+                self.exec_message(data, addr)                                   # 收到消息，对消息进行转发
 
 
     def __del__(self):
